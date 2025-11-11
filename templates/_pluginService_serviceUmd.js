@@ -11,4 +11,3 @@ const serviceUmd = {
    },
    target: "node", // or 'node' if server-side
 };
-

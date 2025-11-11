@@ -52,4 +52,3 @@ module.exports = {
       "no-console": 0, // allow console.log() in our services
    },
 };
-

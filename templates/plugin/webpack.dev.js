@@ -30,4 +30,3 @@ if (Array.isArray(commons)) {
    configs = merge(commons, myChanges);
 }
 module.exports = configs;
-

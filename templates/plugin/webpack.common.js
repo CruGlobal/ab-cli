@@ -88,4 +88,3 @@ const serviceUmd = {
 };
 
 module.exports = [browserEsm, serviceUmd];
-
