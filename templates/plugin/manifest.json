@@ -1,0 +1,8 @@
+{
+   "name": "<%= pluginNameDisplay || pluginName %>",
+   "description": "<%= description || 'A new AppBuilder plugin' %>",
+   "key": "<%= pluginKey || pluginName.toLowerCase().replace(/[^a-z0-9]/g, '_') %>",
+   "version": "0.0.0",
+   "icon": "<%= icon || 'fa-puzzle-piece' %>",
+   "plugins": []
+}

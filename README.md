@@ -8,6 +8,20 @@ A command line helper for our AppBuilder development.
 $ sudo npm install -g CruGlobal/ab-cli
 ```
 
+# Updating
+
+To update to the latest version:
+
+```sh
+$ sudo npm update -g CruGlobal/ab-cli
+```
+
+Or reinstall to ensure you have the latest:
+
+```sh
+$ sudo npm install -g CruGlobal/ab-cli@latest
+```
+
 # Usage
 
 ## Development Install (local machine)
