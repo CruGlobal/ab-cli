@@ -20,10 +20,6 @@ export default function <%= fnObjectName %>({
          return "<%= pluginKey %>";
       }
 
-      static getPluginType() {
-         return "object";
-      }
-
       /**
        * @method model
        * return a Model object that will allow you to interact with the data for

@@ -32,10 +32,6 @@ export default function <%= fnObjectName %>({
          return "<%= pluginKey %>";
       }
 
-      static getPluginType() {
-         return "object";
-      }
-
       /**
        * @method toObj()
        *
