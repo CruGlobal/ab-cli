@@ -39,7 +39,7 @@ services:
     # when there is a problem with : Error: ER_CRASHED_ON_USAGE: Table 'AAAAAA' is marked as crashed and should be repaired
     # this can happen with the alter table algorithm: try the safest(and slowest) COPY
     # eslint-disable-next-line
-    command:["mysqld", "--alter-algorithm=copy", "--wait-timeout=60", "--interactive-timeout=60"]
+    command: ["mysqld", "--alter-algorithm=copy", "--wait-timeout=60", "--interactive-timeout=60"]
   #/db
 
   #redis: use redis to allow cote services to find each other across a swarm
