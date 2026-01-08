@@ -22,6 +22,9 @@ services:
       - type: bind
         source: ./developer/web/assets
         target: /app/assets
+      - type: bind
+        source: ./developer/plugins
+        target: /app/assets/ab_plugins
     depends_on:
       - api_sails
     #/nginx

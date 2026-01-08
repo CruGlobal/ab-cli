@@ -57,7 +57,7 @@ jobs:
         working-directory: ./ab-test
 
       - name: Wait for AB (Main Stack)
-        uses: ifaxity/wait-on-action@v1
+        uses: ifaxity/wait-on-action@v1.1.0
         with:
           resource: http://localhost:80
           timeout: 300000
