@@ -18,9 +18,9 @@ jobs:
         os: [ubuntu-latest] #, windows-latest] #,macos-latest]
         node: [18, 20, 21]
     env:
-         CYPRESS_RESPONSE_TIMEOUT: 200000
-         CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
-         CYPRESS_RETRIES: 2
+      CYPRESS_RESPONSE_TIMEOUT: 200000
+      CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
+      CYPRESS_RETRIES: 2
     steps:
       # - name: Install Docker (Macos)
       #   if: ${{ matrix.os == 'macos-latest'}}
@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install npm packages
         run: npm i
@@ -57,7 +57,7 @@ jobs:
         working-directory: ./ab-test
 
       - name: Wait for AB (Main Stack)
-        uses: ifaxity/wait-on-action@v1.1.0
+        uses: ifaxity/wait-on-action@@v1.2.1
         with:
           resource: http://localhost:80
           timeout: 300000
@@ -66,6 +66,21 @@ jobs:
         run: npm run test:e2e:ab-runtime -- --browser chrome
         working-directory: ./ab-test
 
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: ./AppBuilder/test/e2e/cypress/screenshots
+
+      - name: Save Service Logs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: ABServices.log
+          path: ./AppBuilder/logs/ABServices.log
+
+      # eslint-disable-next-line
       - name: Take Down Main Stack
         run: ./Down.sh
         working-directory: ./ab-test
@@ -106,19 +121,18 @@ jobs:
           path: ./ab-test/logs/ABServices.log
 
       # - name: Take Down Test Stack
-        # run: node ../index.js test down ab
+      # run: node ../index.js test down ab
   podman-install-test:
     name: Podman Install
     runs-on: ubuntu-latest
     env:
-         CYPRESS_RESPONSE_TIMEOUT: 200000
-         CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
-         CYPRESS_RETRIES: 2
+      CYPRESS_RESPONSE_TIMEOUT: 200000
+      CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
+      CYPRESS_RETRIES: 2
     steps:
       - run: sudo apt-get update & sudo apt-get -y install podman & systemctl --user enable --now podman.socket
       # connect Docker CLI to Podman’s socket
       - run: export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock
-
 
       - run: podman version
       - run: podman compose --help
@@ -139,7 +153,7 @@ jobs:
         working-directory: ./ab-test
 
       - name: Wait for AB (Main Stack)
-        uses: ifaxity/wait-on-action@v1
+        uses: ifaxity/wait-on-action@v1.2.1
         with:
           resource: http://localhost:8090
           timeout: 300000
@@ -148,7 +162,20 @@ jobs:
         run: npm run test:e2e:ab-runtime -- --browser chrome
         working-directory: ./ab-test
 
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: ./AppBuilder/test/e2e/cypress/screenshots
+
+      - name: Save Service Logs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: ABServices.log
+          path: ./AppBuilder/logs/ABServices.log
+
       - name: Take Down Main Stack
         run: ./Down.sh
         working-directory: ./ab-test
-
