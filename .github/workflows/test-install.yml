@@ -62,6 +62,11 @@ jobs:
           resource: http://localhost:80
           timeout: 300000
 
+      - run: npm install pm2@latest -g
+      - name: Save Logs
+        run: pm2 start ./logs.js -- --toFile logs/ABServices.log
+        working-directory: ./ab-test
+
       - name: Run Cypress Tests (Main Stack)
         run: npm run test:e2e:ab-runtime -- --browser chrome
         working-directory: ./ab-test
@@ -71,14 +76,14 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path: ./AppBuilder/test/e2e/cypress/screenshots
+          path: ./ab-test/test/e2e/cypress/screenshots
 
       - name: Save Service Logs
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: ABServices.log
-          path: ./AppBuilder/logs/ABServices.log
+          path: ./ab-test/logs/ABServices.log
 
       # eslint-disable-next-line
       - name: Take Down Main Stack
@@ -158,6 +163,11 @@ jobs:
           resource: http://localhost:8090
           timeout: 300000
 
+      - run: npm install pm2@latest -g
+      - name: Save Logs
+        run: pm2 start ./logs.js -- --toFile logs/ABServices.log
+        working-directory: ./ab-test
+
       - name: Run Cypress Tests (Main Stack)
         run: npm run test:e2e:ab-runtime -- --browser chrome
         working-directory: ./ab-test
@@ -167,14 +177,14 @@ jobs:
         if: failure()
         with:
           name: cypress-screenshots
-          path: ./AppBuilder/test/e2e/cypress/screenshots
+          path: ./ab-test/test/e2e/cypress/screenshots
 
       - name: Save Service Logs
         uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: ABServices.log
-          path: ./AppBuilder/logs/ABServices.log
+          path: ./ab-test/logs/ABServices.log
 
       - name: Take Down Main Stack
         run: ./Down.sh
