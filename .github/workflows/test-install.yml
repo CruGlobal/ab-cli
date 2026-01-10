@@ -56,11 +56,11 @@ jobs:
         run: ./UP.sh -t -q
         working-directory: ./ab-test
 
-      - name: Wait for AB (Main Stack)
-        uses: ifaxity/wait-on-action@v1.2.1
-        with:
-          resource: http://localhost:80
-          timeout: 600000
+      # - name: Wait for AB (Main Stack)
+      #   uses: ifaxity/wait-on-action@v1.2.1
+      #   with:
+      #     resource: http://localhost:80
+      #     timeout: 600000
 
       - run: npm install pm2@latest -g
       - name: Save Logs
