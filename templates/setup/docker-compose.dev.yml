@@ -22,9 +22,12 @@ services:
       - type: bind
         source: ./developer/web/assets
         target: /app/assets
+      - type: bind
+        source: ./developer/plugins
+        target: /app/assets/ab_plugins
     depends_on:
       - api_sails
-   #/nginx
+    #/nginx
 
   #db: use Maria DB as our backend DB
   db:
@@ -38,9 +41,9 @@ services:
     ######
     # when there is a problem with : Error: ER_CRASHED_ON_USAGE: Table 'AAAAAA' is marked as crashed and should be repaired
     # this can happen with the alter table algorithm: try the safest(and slowest) COPY
-    command: ["mysqld", "--alter-algorithm=copy" , "--wait-timeout=60", "--interactive-timeout=60"]
+    # eslint-disable-next-line
+    command: ["mysqld", "--alter-algorithm=copy", "--wait-timeout=60", "--interactive-timeout=60"]
   #/db
-
 
   #redis: use redis to allow cote services to find each other across a swarm
   redis:
@@ -50,7 +53,6 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes
   #/redis
-
 
   #api_sails: our API end point
   api_sails:
@@ -91,9 +93,8 @@ services:
     depends_on:
       - redis
     working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app_waitMysql.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app_waitMysql.js"]
   #/api_sails
-
 
   #appbuilder: (AppBuilder) A multi-tenant aware service to process our AppBuilder requests.
   appbuilder:
@@ -121,47 +122,45 @@ services:
       - redis
     working_dir: /app
     # command: npm run dev  # <-- runs nodemon and auto starts when code changes
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/appbuilder
 
-
-  #bot_manager: our #slack bot service
-  bot_manager:
-    image: node
-    environment:
-      - COTE_DISCOVERY_REDIS_HOST=redis
-      # - BOT_DOCKERHUB_ENABLE
-      # - BOT_DOCKERHUB_PORT
-      # - BOT_SLACKBOT_ENABLE
-      # - BOT_SLACKBOT_TOKEN
-      # - BOT_SLACKBOT_NAME
-      # - BOT_SLACKBOT_CHANNEL
-      # - BOT_SLACKBOT_PORT
-      # - BOT_SLACKBOT_SIGNINGSECRET
-      # - BOT_SLACKBOT_SOCKETMODE
-      # - BOT_SLACKBOT_APPTOKEN
-      # - BOT_TRIGGERS
-      # - BOT_COMMANDS
-      # - BOT_HOST_SOCK_PATH
-      # - BOT_HOST_TCP_PORT
-      # - BOT_HOST_TCP_ACCESSTOKEN
-    volumes:
-      - type: bind
-        source: ./developer/bot_manager
-        target: /app
-      # sharing .sock files currently don't work on docker-for-mac:
-      # https://github.com/docker/for-mac/issues/483
-      # For a Mac host, configure config/local.js to hostConnection.tcp
-      # but it doesn't hurt to include the /tmp dir for all platforms.
-      - type: bind
-        source: /tmp
-        target: /tmp
-    depends_on:
-      - redis
-    working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
-  #/bot_manager
-
+  # #bot_manager: our #slack bot service
+  # bot_manager:
+  #   image: node
+  #   environment:
+  #     - COTE_DISCOVERY_REDIS_HOST=redis
+  #     # - BOT_DOCKERHUB_ENABLE
+  #     # - BOT_DOCKERHUB_PORT
+  #     # - BOT_SLACKBOT_ENABLE
+  #     # - BOT_SLACKBOT_TOKEN
+  #     # - BOT_SLACKBOT_NAME
+  #     # - BOT_SLACKBOT_CHANNEL
+  #     # - BOT_SLACKBOT_PORT
+  #     # - BOT_SLACKBOT_SIGNINGSECRET
+  #     # - BOT_SLACKBOT_SOCKETMODE
+  #     # - BOT_SLACKBOT_APPTOKEN
+  #     # - BOT_TRIGGERS
+  #     # - BOT_COMMANDS
+  #     # - BOT_HOST_SOCK_PATH
+  #     # - BOT_HOST_TCP_PORT
+  #     # - BOT_HOST_TCP_ACCESSTOKEN
+  #   volumes:
+  #     - type: bind
+  #       source: ./developer/bot_manager
+  #       target: /app
+  #     # sharing .sock files currently don't work on docker-for-mac:
+  #     # https://github.com/docker/for-mac/issues/483
+  #     # For a Mac host, configure config/local.js to hostConnection.tcp
+  #     # but it doesn't hurt to include the /tmp dir for all platforms.
+  #     - type: bind
+  #       source: /tmp
+  #       target: /tmp
+  #   depends_on:
+  #     - redis
+  #   working_dir: /app
+  #   command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+  # #/bot_manager
 
   #custom_reports: A service for custom reports.
   custom_reports:
@@ -185,9 +184,8 @@ services:
     depends_on:
       - redis
     working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/custom_reports
-
 
   #definition_manager: (AppBuilder) A service to manage the definitions for a running AppBuilder platform.
   definition_manager:
@@ -211,9 +209,8 @@ services:
     depends_on:
       - redis
     working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/definition_manager
-
 
   #file_processor: A service to manage uploaded files.
   file_processor:
@@ -242,9 +239,8 @@ services:
     depends_on:
       - redis
     working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/file_processor
-
 
   #log_manager: (AppBuilder) A log manager for various AB operations
   log_manager:
@@ -272,9 +268,8 @@ services:
     depends_on:
       - redis
     working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/log_manager
-
 
   #notification_email: an smtp email service
   notification_email:
@@ -308,9 +303,8 @@ services:
     depends_on:
       - redis
     working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/notification_email
-
 
   #process_manager: (AppBuilder) a micro service to manage our process tasks
   process_manager:
@@ -333,9 +327,8 @@ services:
     depends_on:
       - redis
     working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/process_manager
-
 
   #relay: (Appbuilder} A service to handle the communications with our relay server.
   relay:
@@ -364,9 +357,8 @@ services:
     depends_on:
       - redis
     working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/relay
-
 
   #tenant_manager: (AppBuilder) A service to manage the site's tenants
   tenant_manager:
@@ -391,9 +383,8 @@ services:
     depends_on:
       - redis
     working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/tenant_manager
-
 
   #user_manager: (AppBuilder) A microservice for managing Users
   user_manager:
@@ -418,10 +409,8 @@ services:
     depends_on:
       - redis
     working_dir: /app
-    command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
+    command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/user_manager
-
-
 #  #watchtower: monitor and update our running containers
 #  watchtower:
 #    image: v2tec/watchtower

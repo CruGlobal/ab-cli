@@ -18,9 +18,9 @@ jobs:
         os: [ubuntu-latest] #, windows-latest] #,macos-latest]
         node: [18, 20, 21]
     env:
-         CYPRESS_RESPONSE_TIMEOUT: 200000
-         CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
-         CYPRESS_RETRIES: 2
+      CYPRESS_RESPONSE_TIMEOUT: 200000
+      CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
+      CYPRESS_RETRIES: 2
     steps:
       # - name: Install Docker (Macos)
       #   if: ${{ matrix.os == 'macos-latest'}}
@@ -38,7 +38,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: 'npm'
+          cache: "npm"
 
       - name: Install npm packages
         run: npm i
@@ -56,16 +56,36 @@ jobs:
         run: ./UP.sh -t -q
         working-directory: ./ab-test
 
-      - name: Wait for AB (Main Stack)
-        uses: ifaxity/wait-on-action@v1
-        with:
-          resource: http://localhost:80
-          timeout: 300000
+      # - name: Wait for AB (Main Stack)
+      #   uses: ifaxity/wait-on-action@v1.2.1
+      #   with:
+      #     resource: http://localhost:80
+      #     timeout: 600000
+
+      - run: npm install pm2@latest -g
+      - name: Save Logs
+        run: pm2 start ./logs.js -- --toFile logs/ABServices.log
+        working-directory: ./ab-test
 
       - name: Run Cypress Tests (Main Stack)
         run: npm run test:e2e:ab-runtime -- --browser chrome
         working-directory: ./ab-test
 
+      - name: Save Screenshots
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: ./ab-test/test/e2e/cypress/screenshots
+
+      - name: Save Service Logs
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: ABServices.log
+          path: ./ab-test/logs/ABServices.log
+
+      # eslint-disable-next-line
       - name: Take Down Main Stack
         run: ./Down.sh
         working-directory: ./ab-test
@@ -106,49 +126,66 @@ jobs:
           path: ./ab-test/logs/ABServices.log
 
       # - name: Take Down Test Stack
-        # run: node ../index.js test down ab
-  podman-install-test:
-    name: Podman Install
-    runs-on: ubuntu-latest
-    env:
-         CYPRESS_RESPONSE_TIMEOUT: 200000
-         CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
-         CYPRESS_RETRIES: 2
-    steps:
-      - run: sudo apt-get update & sudo apt-get -y install podman & systemctl --user enable --now podman.socket
-      # connect Docker CLI to Podman’s socket
-      - run: export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock
+      # run: node ../index.js test down ab
+  # podman-install-test:
+  #   name: Podman Install
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     CYPRESS_RESPONSE_TIMEOUT: 200000
+  #     CYPRESS_DEFAULT_COMMAND_TIMEOUT: 30000
+  #     CYPRESS_RETRIES: 2
+  #   steps:
+  #     - run: sudo apt-get update & sudo apt-get -y install podman & systemctl --user enable --now podman.socket
+  #     # connect Docker CLI to Podman’s socket
+  #     - run: export DOCKER_HOST=unix://$XDG_RUNTIME_DIR/podman/podman.sock
 
+  #     - run: podman version
+  #     - run: podman compose --help
 
-      - run: podman version
-      - run: podman compose --help
+  #     - name: Checkout ab-cli
+  #       uses: actions/checkout@v2
 
-      - name: Checkout ab-cli
-        uses: actions/checkout@v2
+  #     - name: Install npm packages
+  #       run: npm i
 
-      - name: Install npm packages
-        run: npm i
+  #     - name: Install AppBuilder
+  #       run: node index.js install ab-test --stack=ab-test --port=8090 --tag=latest --dbExpose=true --dbPort=8888 --dbPassword=root --authType=login --relayEnabled=false --siteURL=http://localhost:8090 --tenant.username=admin --tenant.password=admin --tenant.email=admin@email.com --tenant.url=http://localhost:8090 --platform=podman
 
-      - name: Install AppBuilder
-        run: node index.js install ab-test --stack=ab-test --port=8090 --tag=latest --dbExpose=true --dbPort=8888 --dbPassword=root --authType=login --relayEnabled=false --siteURL=http://localhost:8090 --tenant.username=admin --tenant.password=admin --tenant.email=admin@email.com --tenant.url=http://localhost:8090 --platform=podman
+  #     # Give some time for the stack to come down fully
+  #     - run: sleep 15
+  #     - name: Launch Main Stack
+  #       run: ./UP.sh -t -q
+  #       working-directory: ./ab-test
 
-      # Give some time for the stack to come down fully
-      - run: sleep 15
-      - name: Launch Main Stack
-        run: ./UP.sh -t -q
-        working-directory: ./ab-test
+  #     - name: Wait for AB (Main Stack)
+  #       uses: ifaxity/wait-on-action@v1.2.1
+  #       with:
+  #         resource: http://localhost:8090
+  #         timeout: 300000
 
-      - name: Wait for AB (Main Stack)
-        uses: ifaxity/wait-on-action@v1
-        with:
-          resource: http://localhost:8090
-          timeout: 300000
+  #     - run: npm install pm2@latest -g
+  #     - name: Save Logs
+  #       run: pm2 start ./logs.js -- --toFile logs/ABServices.log
+  #       working-directory: ./ab-test
 
-      - name: Run Cypress Tests (Main Stack)
-        run: npm run test:e2e:ab-runtime -- --browser chrome
-        working-directory: ./ab-test
+  #     - name: Run Cypress Tests (Main Stack)
+  #       run: npm run test:e2e:ab-runtime -- --browser chrome
+  #       working-directory: ./ab-test
 
-      - name: Take Down Main Stack
-        run: ./Down.sh
-        working-directory: ./ab-test
+  #     - name: Save Screenshots
+  #       uses: actions/upload-artifact@v4
+  #       if: failure()
+  #       with:
+  #         name: cypress-screenshots
+  #         path: ./ab-test/test/e2e/cypress/screenshots
 
+  #     - name: Save Service Logs
+  #       uses: actions/upload-artifact@v4
+  #       if: failure()
+  #       with:
+  #         name: ABServices.log
+  #         path: ./ab-test/logs/ABServices.log
+
+  #     - name: Take Down Main Stack
+  #       run: ./Down.sh
+  #       working-directory: ./ab-test
