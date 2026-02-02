@@ -3,7 +3,7 @@
 // The Editor is displayed in the ABDesigner as a view is worked on.
 // The Editor allows a widget to be moved and placed on the canvas.
 //
-export default function <%= fnObjectName %>Editor({ ABViewEditorPlugin }) {
+export default function <%= fnObjectName %>Editor({ AB, ABViewEditorPlugin }) {
    return class AB<%= objectNamePascal %>Editor extends ABViewEditorPlugin {
       constructor(view, base = "interface_editor_<%= objectNamePascal.toLowerCase() %>", ids = {}) {
          // view: {ABView} The ABView instance this editor is for

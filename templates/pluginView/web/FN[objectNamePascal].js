@@ -8,6 +8,7 @@ export default function <%= fnObjectName %>({
    /*AB,*/
    ABViewPlugin,
    ABViewComponentPlugin,
+   ABViewContainer
 }) {
    const AB<%= objectNamePascal %>Component = <%= fnObjectName %>Component({ ABViewComponentPlugin });
 
