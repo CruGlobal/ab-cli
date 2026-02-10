@@ -1,0 +1,37 @@
+# Dependencies (reinstalled in image)
+node_modules
+**/node_modules
+
+# Version control and CI
+.git
+.gitignore
+.github
+
+# Local and sensitive files
+.env
+.env.*
+!.env.example
+*.log
+npm-debug.log*
+# config/local.js  # uncomment to exclude from image
+
+# Test and dev
+test
+*.test.js
+.mocharc.js
+coverage
+.nyc_output
+.eslintrc*
+eslint.config.mjs
+.prettier*
+
+# IDE and OS
+.vscode
+.idea
+*.swp
+.DS_Store
+
+# Docs and misc (optional: remove if you need these in image)
+README.md
+Makefile
+*.md
