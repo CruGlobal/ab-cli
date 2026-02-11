@@ -3,15 +3,9 @@ const APP = path.resolve(__dirname);
 const { merge } = require("webpack-merge");
 const commons = require("./webpack.common.js"); // exports [browserEsm, serviceUmd]
 
-// todo: move this to a /dist folder in the plugin root
 const outPath = path.join(
    APP,
-   "..",
-   "..",
-   "web",
-   "assets",
-   "ab_plugins",
-   "ab-<%= pluginName.toLowerCase() %>"
+   "dist"
 );
 
 module.exports = commons.map((cfg) =>
