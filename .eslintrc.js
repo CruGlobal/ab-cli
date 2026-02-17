@@ -5,6 +5,13 @@ module.exports = {
       es2020: true,
    },
 
+   overrides: [
+      {
+         files: ["**/test/**/*.js"],
+         env: { mocha: true },
+      },
+   ],
+
    parserOptions: {
       sourceType: "module",
       ecmaVersion: 2020,
