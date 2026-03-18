@@ -56,7 +56,9 @@ services:
 
   #api_sails: our API end point
   api_sails:
-    image: node
+    # NOTE: since our file_processor is using our docker image, we should use
+    # our api-sails image so USER permissions are correct between the two services.
+    image: docker.io/digiserve/ab-api-sails:$AB_API_SAILS_VERSION
     environment:
       - COTE_DISCOVERY_REDIS_HOST=redis
       - NODE_ENV=development
@@ -92,8 +94,9 @@ services:
       - files:/data
     depends_on:
       - redis
-    working_dir: /app
-    command: ["node", "--inspect=0.0.0.0:9229", "app_waitMysql.js"]
+    # NOTE: our working image already sets this up:
+    # working_dir: /app
+    # command: ["node", "--inspect=0.0.0.0:9229", "app_waitMysql.js"]
   #/api_sails
 
   #appbuilder: (AppBuilder) A multi-tenant aware service to process our AppBuilder requests.
@@ -214,7 +217,9 @@ services:
 
   #file_processor: A service to manage uploaded files.
   file_processor:
-    image: node
+    # NOTE: our docker image contains additional utils not found in the node
+    # image, so we use that instead.
+    image: docker.io/digiserve/ab-file-processor:$AB_FILE_PROCESSOR_VERSION
     environment:
       - COTE_DISCOVERY_REDIS_HOST=redis
       - MYSQL_PASSWORD
