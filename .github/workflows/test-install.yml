@@ -67,6 +67,9 @@ jobs:
         run: pm2 start ./logs.js -- --toFile logs/ABServices.log
         working-directory: ./ab-test
 
+      # Give time for stack to come up fully
+      - run: sleep 120s
+
       - name: Run Cypress Tests (Main Stack)
         run: npm run test:e2e:ab-runtime -- --browser chrome
         working-directory: ./ab-test
