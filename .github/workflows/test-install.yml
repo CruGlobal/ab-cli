@@ -67,6 +67,11 @@ jobs:
       #     resource: http://localhost:80
       #     timeout: 600000
 
+      # Migrate The TEST stack DB
+      - name: Migrate Test Stack DB
+        run: ./migrate.sh -t
+        working-directory: ./ab-test
+
       - run: npm install pm2@latest -g
       - name: Save Logs
         run: pm2 start ./logs.js -- --toFile logs/ABServices.log
