@@ -52,6 +52,9 @@ jobs:
       # Give some time for the stack to come down fully
       - run: sleep 15
 
+      - name: update permissions
+        run: chmod 777 ./ab-test/developer/api_sails
+
       - name: Launch Main Stack
         run: ./UP.sh -t -q
         working-directory: ./ab-test
