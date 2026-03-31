@@ -47,11 +47,13 @@ jobs:
         run: docker swarm init --advertise-addr 127.0.0.1
 
       - name: Install AppBuilder
-        run: node index.js install ab-test --stack=ab-test --develop --port=80 --tag=latest --dbExpose=true --dbPort=8888 --dbPassword=root --authType=login --relayEnabled=false --siteURL=http://localhost:80 --tenant.username=admin --tenant.password=admin --tenant.email=admin@email.com --tenant.url=http://localhost:80
+        run: node index.js install ab-test --stack=ab-test --develop --port=80 --tag=latest --dbExpose=true --dbPort=8888 --dbPassword=root --authType=login --relayEnabled=false --siteURL=http://localhost:80 --tenant.username=admin --tenant.password=admin --tenant.email=admin@email.com --tenant.url=http://localhost:80 --runtime=jh/CypressStack
 
       # Give some time for the stack to come down fully
       - run: sleep 15
 
+      # Update Permissions: api_sails crashes if a local DB attempt is used
+      # and we don't have permission to write there.
       - name: update permissions
         run: chmod 777 ./ab-test/developer/api_sails
 
