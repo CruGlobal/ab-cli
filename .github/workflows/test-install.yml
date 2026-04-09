@@ -52,6 +52,11 @@ jobs:
       # Give some time for the stack to come down fully
       - run: sleep 15
 
+      # Update Permissions: api_sails crashes if a local DB attempt is used
+      # and we don't have permission to write there.
+      - name: update permissions
+        run: chmod 777 ./ab-test/developer/api_sails
+
       - name: Launch Main Stack
         run: ./UP.sh -t -q
         working-directory: ./ab-test
@@ -66,6 +71,11 @@ jobs:
       - name: Save Logs
         run: pm2 start ./logs.js -- --toFile logs/ABServices.log
         working-directory: ./ab-test
+
+      # Give time for stack to come up fully
+      - run: sleep 120s
+
+      - run: docker service ls
 
       - name: Run Cypress Tests (Main Stack)
         run: npm run test:e2e:ab-runtime -- --browser chrome
