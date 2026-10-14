@@ -282,6 +282,39 @@ services:
     command: ["node", "--inspect=0.0.0.0:9229", "app.js"]
   #/log_manager
 
+  #mcp_server: (AppBuilder) A service to expose our AppBuilder capabilities
+  #            as an mcp server.
+  mcp_server:
+    image: node
+    environment:
+      - COTE_DISCOVERY_REDIS_HOST=redis
+      - MCP_SERVER_PORT
+      # - MCP_SERVER_HOST
+      # - MCP_SERVER_ALLOWED_HOSTS
+      # - MCP_SERVER_JSON_LIMIT
+      # - MCP_SERVER_MCP_PATH
+      # - MCP_SERVER_MCP_ALLOWED_HOSTS
+      # - MCP_SERVER_MCP_JSON_LIMIT
+      - MYSQL_PASSWORD
+      # - MYSQL_HOST
+      # - MYSQL_PORT
+      # - MYSQL_USER
+      # - MYSQL_DBPREFIX
+      # - MYSQL_DBADMIN
+      # - MYSQL_POOL_MAX
+      # - MYSQL_POOL_ACQUIRE_TIMEOUT
+      - DEFINITION_MANAGER_ENABLE
+    hostname: mcp_server
+    volumes:
+      - type: bind
+        source: ./developer/mcp_server
+        target: /app
+    # depends_on:
+    #   - redis
+    working_dir: /app
+    command: ["node", "--inspect=0.0.0.0:9229", "dist/server.js"]
+  #/mcp_server
+
   #notification_email: an smtp email service
   notification_email:
     image: node

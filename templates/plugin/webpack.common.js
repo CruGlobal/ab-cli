@@ -43,7 +43,7 @@ const common = {
       fallback: {
          process: false,
          vm: require.resolve("vm-browserify"),
-         crypto: require.resolve("crypto-browserify"),
+         crypto: false,
          stream: require.resolve("stream-browserify"),
          buffer: require.resolve("buffer/"),
       },

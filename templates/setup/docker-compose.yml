@@ -11,7 +11,6 @@ networks:
     attachable: true
 
 services:
-
   #nginx setup
   web:
     image: docker.io/digiserve/ab-web:$AB_WEB_VERSION
@@ -21,7 +20,6 @@ services:
     depends_on:
       - api_sails
   #/nginx
-
 
   #db: use Maria DB as our backend DB
   db:
@@ -40,7 +38,6 @@ services:
     # command: ["mysqld", "--alter-algorithm=copy"]
   #/db
 
-
   #redis: use redis to allow cote services to find each other across a swarm
   redis:
     image: docker.io/redis
@@ -51,7 +48,6 @@ services:
       - redis_data:/data
     command: redis-server --appendonly yes
   #/redis
-
 
   # #config: simply exists to pull in the config/local.js into our config volume
   # config:
@@ -68,7 +64,6 @@ services:
   #   working_dir: /app
   #   command: ["node", "app.js"]
   # #/config
-
 
   #api_sails: our API end point
   api_sails:
@@ -112,7 +107,6 @@ services:
     # command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
   #/api_sails
 
-
   #appbuilder: (AppBuilder) A multi-tenant aware service to process our AppBuilder requests.
   appbuilder:
     image: docker.io/digiserve/ab-appbuilder:$AB_APPBUILDER_VERSION
@@ -135,7 +129,6 @@ services:
       - redis
     # command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
   #/appbuilder
-
 
   # #bot_manager: our #slack bot service
   # bot_manager:
@@ -172,7 +165,6 @@ services:
   #     - redis
   # #/bot_manager
 
-
   # custom_reports: A microservice for managing custom reports
   custom_reports:
     image: docker.io/digiserve/ab-custom-reports:$AB_CUSTOM_REPORTS_VERSION
@@ -192,7 +184,6 @@ services:
       - redis
   #/custom_reports
 
-
   #definition_manager: (AppBuilder) A service to manage the definitions for a running AppBuilder platform.
   definition_manager:
     image: docker.io/digiserve/ab-definition-manager:$AB_DEFINITION_MANAGER_VERSION
@@ -211,7 +202,6 @@ services:
     depends_on:
       - redis
   #/definition_manager
-
 
   #file_processor: A service to manage uploaded files.
   file_processor:
@@ -239,7 +229,6 @@ services:
       - redis
   #/file_processor
 
-
   #log_manager: (AppBuilder) A log manager for various AB operations
   log_manager:
     image: docker.io/digiserve/ab-log-manager:$AB_LOG_MANAGER_VERSION
@@ -263,6 +252,32 @@ services:
       - redis
   #/log_manager
 
+  #mcp_server: (AppBuilder) A service to expose our AppBuilder capabilities
+  #            as an mcp server.
+  mcp_server:
+    image: docker.io/digiserve/ab-mcp-server:$AB_MCP_SERVER_VERSION
+    environment:
+      - COTE_DISCOVERY_REDIS_HOST=redis
+      - MCP_SERVER_PORT
+      # - MCP_SERVER_HOST
+      # - MCP_SERVER_ALLOWED_HOSTS
+      # - MCP_SERVER_JSON_LIMIT
+      # - MCP_SERVER_MCP_PATH
+      # - MCP_SERVER_MCP_ALLOWED_HOSTS
+      # - MCP_SERVER_MCP_JSON_LIMIT
+      - MYSQL_PASSWORD
+      # - MYSQL_HOST
+      # - MYSQL_PORT
+      # - MYSQL_USER
+      # - MYSQL_DBPREFIX
+      # - MYSQL_DBADMIN
+      # - MYSQL_POOL_MAX
+      # - MYSQL_POOL_ACQUIRE_TIMEOUT
+      - DEFINITION_MANAGER_ENABLE
+    hostname: mcp_server
+    depends_on:
+      - redis
+  #/mcp_server
 
   #notification_email: an smtp email service
   notification_email:
@@ -293,7 +308,6 @@ services:
       - redis
   #/notification_email
 
-
   #process_manager: (AppBuilder) a micro service to manage our process tasks
   process_manager:
     image: docker.io/digiserve/ab-process-manager:$AB_PROCESS_MANAGER_VERSION
@@ -311,7 +325,6 @@ services:
     depends_on:
       - redis
   #/process_manager
-
 
   #relay: (Appbuilder} A service to handle the communications with our relay server.
   relay:
@@ -337,7 +350,6 @@ services:
       - redis
   #/relay
 
-
   #tenant_manager: (AppBuilder) A service to manage the site's tenants
   tenant_manager:
     image: docker.io/digiserve/ab-tenant-manager:$AB_TENANT_MANAGER_VERSION
@@ -357,7 +369,6 @@ services:
     depends_on:
       - redis
   #/tenant_manager
-
 
   #user_manager: (AppBuilder) A microservice for managing Users
   user_manager:
@@ -379,8 +390,6 @@ services:
       - redis
     # command: [ "node", "--inspect=0.0.0.0:9229", "app.js" ]
   #/user_manager
-
-
 #  #watchtower: monitor and update our running containers
 #  watchtower:
 #    image: v2tec/watchtower

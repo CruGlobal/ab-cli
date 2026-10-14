@@ -1,0 +1,8 @@
+{
+   "name": "<%= pluginNameDisplay || pluginName %>",
+   "description": "<%= description || 'Bundled platform included view plugins' %>",
+   "key": "<%= pluginKey %>",
+   "version": "0.0.0",
+   "icon": "<%= icon || 'fa-puzzle-piece' %>",
+   "plugins": []
+}

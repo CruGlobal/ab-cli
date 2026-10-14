@@ -101,6 +101,14 @@ services:
   #   # extends:
   #   #   service: common_config
 
+  # #mcp_server: (AppBuilder) A service to manage the definitions for a running AppBuilder platform.
+  # mcp_server:
+  #   ports:
+  #     - "${MCP_SERVER_PORT}:3333"
+  #     - "9229:9229"
+  #   # extends:
+  #   #   service: common_config
+
 
   # #notification_email: an smtp email service
   # notification_email:
